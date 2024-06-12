@@ -1,16 +1,26 @@
-import 'package:dio/dio.dart';
+enum DataStateStatus { initial, loading, success, error }
 
-abstract class DataState <T>{
-  final T ? data;
-  final DioError ? error;
+class DataState<T> {
+  final DataStateStatus status;
+  final T? data;
+  final String? error;
 
-  const DataState ({this.data , this.error});
+  const DataState._({required this.status, this.data, this.error});
+
+  factory DataState.initial() =>
+      const DataState._(status: DataStateStatus.initial);
+
+  factory DataState.loading() =>
+      const DataState._(status: DataStateStatus.loading);
+
+  factory DataState.success(T data) =>
+      DataState._(status: DataStateStatus.success, data: data);
+
+  factory DataState.error(String error) =>
+      DataState._(status: DataStateStatus.error, error: error);
 }
 
-class DataSucces<T> extends DataState<T>{
-  const DataSucces(T data ) : super(data: data);
-}
-
-class DataFailed<T> extends DataState<T> {
-  const DataFailed(DioError error) : super(error: error);
+class DataSuccess<T> extends DataState<T> {
+  const DataSuccess(T data)
+      : super._(status: DataStateStatus.success, data: data);
 }
